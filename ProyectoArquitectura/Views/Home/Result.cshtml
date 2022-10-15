@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Resultados";
+}
+<div class="row justify-content-center">
+    <h1 class="text-center mb-4 mt-4 text-dark-60">@ViewData["Title"]</h1>
+    
+    <div class="card col-md-8 border-0 mb-3">
+        <div class="card-header bg-primary text-white">
+            <h2>Resultado presicion Simple</h2>
+        </div>
+        <div class="card-body bg-light">
+            <table class="table table-light text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">Signo</th>
+                        <th scope="col">Exponente</th>
+                        <th scope="col">Mantisa</th>
+                    </tr>    
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@ViewBag.result.Sign</td>
+                        <td>@ViewBag.result.SimpleExponent</td>
+                        <td>@ViewBag.result.SimpleMantissa</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-success text-white">
+            <p><strong>Resultado en hexadecimal simple: @ViewBag.result.SimpleHexadecimalValue</strong></p>
+        </div>
+    </div>
+    <div class="card col-md-8 border-0">
+        <div class="card-header bg-primary text-white">
+            <h2>Resultado presicion Doble</h2>
+        </div>
+        <div class="card-body bg-light">
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th scope="col">Signo</th>
+                        <th scope="col">Exponente</th>
+                        <th scope="col">Mantisa</th>
+                    </tr>    
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@ViewBag.result.Sign</td>
+                        <td>@ViewBag.result.DoubleExponent</td>
+                        <td>@ViewBag.result.DoubleMantissa</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-success text-white">
+            <p><strong>Resultado en hexadecimal doble: @ViewBag.result.DoubleHexadecimalValue</strong></p>
+        </div>
+    </div>
+</div>
