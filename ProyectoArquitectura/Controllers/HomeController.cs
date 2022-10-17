@@ -37,8 +37,8 @@ namespace ProyectoArquitectura.Controllers
             var sign = double.Parse(number) > 0 ? "0" : "1"; 
             var splitNumber = (sign == "0") ? number.Split('.') : number[1..].Split('.');
             var binaryIntegerPart = ConvertIntegerPartToBinary(int.Parse(splitNumber[0]));
-            var binaryDecimalPart = ConvertToBinaryDecimalPart(int.Parse(splitNumber[1]), (binaryIntegerPart.Contains('1') ? binaryIntegerPart.Length : 0), 23);
-            var doubleBinaryDecimalPart = ConvertToBinaryDecimalPart(int.Parse(splitNumber[1]), (binaryIntegerPart.Contains('1') ? binaryIntegerPart.Length : 0), 52);
+            var binaryDecimalPart = ConvertToBinaryDecimalPart(int.Parse(splitNumber[1]), 23);
+            var doubleBinaryDecimalPart = ConvertToBinaryDecimalPart(int.Parse(splitNumber[1]), 52);
             var simpleDenormalize = Denormalize(binaryIntegerPart, binaryDecimalPart).Split("*");
             var doubleDenormalize = Denormalize(binaryIntegerPart, doubleBinaryDecimalPart).Split("*");
             var simpleExponent = ValidateExponent(ConvertIntegerPartToBinary(127 + int.Parse(simpleDenormalize[1])), 8);
@@ -87,11 +87,10 @@ namespace ProyectoArquitectura.Controllers
             return new String(result.ToCharArray().Reverse().ToArray());
         }
 
-        private string ConvertToBinaryDecimalPart(int decimalPart, int integerPartSize, int precision)
+        private string ConvertToBinaryDecimalPart(int decimalPart, int precision)
         {
             var result = "";
             var actualNumber = decimalPart;
-            _logger.LogInformation("tmanio parte entera: " + integerPartSize);
             for (int i = 0; i < precision + 10; i++)
             {
                 var aux = actualNumber * 2;
