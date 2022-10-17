@@ -10,7 +10,7 @@
                 <form asp-action="Result" asp-controller="Home" method="post">
                     <div class="form-group">
                         <label for="number"><h2>Numero a convertir</h2></label>
-                        <input asp-for="Number" type="text" class="form-control my-2" id="number" aria-describedby="help" placeholder="Ingrese un numero" required>
+                        <input asp-for="Number" type="number" step="0.000000001" class="form-control my-2" id="number" aria-describedby="help" placeholder="Ingrese un numero" required>
                         <small id="help" class="form-text text-muted my-2"><h6>El numero a convertir debe ser un decimal.</h6></small>
                     </div>
                     <button type="submit" class="btn btn-primary my-2 text-34"><h5>Convertir</h5></button>
