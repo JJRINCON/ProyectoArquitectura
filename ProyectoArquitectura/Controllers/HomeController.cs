@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using ProyectoArquitectura.Models;
 using System.Diagnostics;
 
@@ -34,7 +35,7 @@ namespace ProyectoArquitectura.Controllers
         private ResultModel ConvertNumber(string number)
         {
             var sign = double.Parse(number) > 0 ? "0" : "1"; 
-            var splitNumber = number.Split('.');
+            var splitNumber = (sign == "0") ? number.Split('.') : number[1..].Split('.');
             var binaryIntegerPart = ConvertIntegerPartToBinary(int.Parse(splitNumber[0]));
             var binaryDecimalPart = ConvertToBinaryDecimalPart(int.Parse(splitNumber[1]), (binaryIntegerPart.Contains('1') ? binaryIntegerPart.Length : 0), 23);
             var doubleBinaryDecimalPart = ConvertToBinaryDecimalPart(int.Parse(splitNumber[1]), (binaryIntegerPart.Contains('1') ? binaryIntegerPart.Length : 0), 52);
@@ -44,18 +45,22 @@ namespace ProyectoArquitectura.Controllers
             var doubleExponent = ValidateExponent(ConvertIntegerPartToBinary(1023 + int.Parse(doubleDenormalize[1])), 11);
             var mantissa = simpleDenormalize[0].Split(".")[1].Substring(0, 23);
             var doubleMantissa = doubleDenormalize[0].Split(".")[1].Substring(0,52);
-            _logger.LogInformation("signo: " + sign);
-            _logger.LogInformation("exponente: " + simpleExponent);
-            _logger.LogInformation("simple manisa: " + mantissa);
             return new ResultModel()
             {
                  Sign = sign,
+                 BinaryIntegerPart = binaryIntegerPart,
+                 BinaryDecimalPart = binaryDecimalPart,
+                 UnionSimple = binaryIntegerPart + "." + binaryDecimalPart.Substring(0, 23),
+                 UnionDouble = binaryIntegerPart + "." + binaryDecimalPart.Substring(0, 23),
+                 DenormalizationSimple = simpleDenormalize[0],
+                 DenormalizationDoouble = doubleDenormalize[0],
                  SimpleExponent = simpleExponent,
                  DoubleExponent = doubleExponent,
                  SimpleMantissa = mantissa,
                  DoubleMantissa = doubleMantissa,
                  SimpleHexadecimalValue = ConvertToHexadecimal(sign + simpleExponent + mantissa),
                  DoubleHexadecimalValue = ConvertToHexadecimal(sign + doubleExponent + doubleMantissa),
+                 Number = number
             };
         }
 
@@ -90,15 +95,19 @@ namespace ProyectoArquitectura.Controllers
             for (int i = 0; i < precision + 10; i++)
             {
                 var aux = actualNumber * 2;
+                var log = "resultado: " + i + " " + aux + " " + result;
                 if (aux.ToString().Length > decimalPart.ToString().Length)
                 {
                     result += "1";
-                    actualNumber = int.Parse(aux.ToString().Substring(1, aux.ToString().Length - 1));
+                    log += " xd 1";
+                    actualNumber = int.Parse(aux.ToString()[1..]);
                 } else
                 {
                     result += "0";
+                    log += " xd 0";
                     actualNumber = aux;
                 }
+                _logger.LogInformation(log);
             }
             return result;
         }
@@ -110,21 +119,19 @@ namespace ProyectoArquitectura.Controllers
             if (binaryIntegerPart.Contains('1'))
             {
                 var firstOne = binaryIntegerPart.IndexOf('1') + 1;
-                result = "1." + binaryIntegerPart.Substring(firstOne, binaryIntegerPart.Length - 1) + binaryDecimalPart;
+                result = "1." + binaryIntegerPart[firstOne..] + binaryDecimalPart;
                 slipping = binaryIntegerPart.Length - firstOne;
             } else
             {
                 var firstOne = binaryDecimalPart.IndexOf('1') + 1;
-                result = "1." + binaryDecimalPart.Substring(firstOne, binaryDecimalPart.Length - 1);
+                result = "1." + binaryDecimalPart[firstOne..];
                 slipping -= firstOne;
-                _logger.LogInformation("negativa: " + result);
             }
             return result + "*" + slipping;
         }
 
         private string ConvertToHexadecimal(string result)
         {
-            _logger.LogInformation("hexa: " + result);
             var hexadecimalValue = "";
             for (int i = 0; i < result.Length; i += 4)
             {
