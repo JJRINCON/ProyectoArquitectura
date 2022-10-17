@@ -95,19 +95,15 @@ namespace ProyectoArquitectura.Controllers
             for (int i = 0; i < precision + 10; i++)
             {
                 var aux = actualNumber * 2;
-                var log = "resultado: " + i + " " + aux + " " + result;
                 if (aux.ToString().Length > decimalPart.ToString().Length)
                 {
                     result += "1";
-                    log += " xd 1";
                     actualNumber = int.Parse(aux.ToString()[1..]);
                 } else
                 {
                     result += "0";
-                    log += " xd 0";
                     actualNumber = aux;
                 }
-                _logger.LogInformation(log);
             }
             return result;
         }
